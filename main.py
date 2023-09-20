@@ -45,11 +45,37 @@ def pad(x,y):
     return x,y
 
 def quadratic_multiply(x, y):
-    # this just converts the result from a BinaryNumber to a regular int
     return _quadratic_multiply(x,y).decimal_val
 
 def _quadratic_multiply(x, y):
-    ### TODO
+    xvec = x.binary_vec
+    yvec = y.binary_vec
+  
+    padding = pad(xvec, yvec)
+    xvec = padding[0]
+    yvec = padding[1]
+
+    if x.decimal_val <= 1 and y.decimal_val <= 1:
+      return BinaryNumber(x.decimal_val * y.decimal_val)
+
+    else: 
+      x_left = split_number(xvec)[0]
+      x_right = split_number(xvec)[1]
+      y_left = split_number(yvec)[0]
+      y_right = split_number(yvec)[1]
+
+      xl_yl = _quadratic_multiply(x_left, y_left)
+      xl_yr = _quadratic_multiply(x_left, y_right)
+      xr_yl = _quadratic_multiply(x_right, y_left)
+      xr_yr = _quadratic_multiply(x_right, y_right)
+  
+      bit_shift1 = bit_shift(xl_yl, len(xvec))
+      bit_shift2 = bit_shift(BinaryNumber(xl_yr.decimal_val + xr_yl.decimal_val), 
+                         len(xvec)//2)
+  
+      return BinaryNumber(bit_shift1.decimal_val + bit_shift2.decimal_val + xr_yr.decimal_val)
+
+    
     pass
     ###
 
